@@ -39,9 +39,8 @@
     #define DEBUG_PRINT(fmt, args...)
 #endif
 
-#define CHASSIS_FAN_COUNT     6
-#define CHASSIS_FAN_MOTOR_COUNT     2
-#define CHASSIS_THERMAL_COUNT 20
+#define CHASSIS_FAN_COUNT     14
+#define CHASSIS_THERMAL_COUNT 24
 #define CHASSIS_LED_COUNT     4
 #define CHASSIS_PSU_COUNT     2
 
@@ -68,6 +67,10 @@ enum onlp_thermal_id
     THERMAL_VDD1V5_1V8_MAC,
     THERMAL_VCC3V3_QSFP_AB,
     THERMAL_VCC3V3_QSFP_CD,
+    THERMAL_PSU1_TEMP_1,
+    THERMAL_PSU1_TEMP_2,
+    THERMAL_PSU2_TEMP_1,
+    THERMAL_PSU2_TEMP_2,
 };
 
 int onlp_file_read_hex(int* value, const char* fmt, ...);

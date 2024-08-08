@@ -32,39 +32,7 @@
 #include "x86_64_accton_dcg8510_32d_log.h"
 
 #define NUM_OF_QSFP_PORT 32
-/* QSFP Port index */
-#define QSFP_1          0
-#define QSFP_2          1
-#define QSFP_3          2
-#define QSFP_4          3
-#define QSFP_5          4
-#define QSFP_6          5
-#define QSFP_7          6
-#define QSFP_8          7
-#define QSFP_9          8
-#define QSFP_10         9
-#define QSFP_11         10
-#define QSFP_12         11
-#define QSFP_13         12
-#define QSFP_14         13
-#define QSFP_15         14
-#define QSFP_16         15
-#define QSFP_17         16
-#define QSFP_18         17
-#define QSFP_19         18
-#define QSFP_20         19
-#define QSFP_21         20
-#define QSFP_22         21
-#define QSFP_23         22
-#define QSFP_24         23
-#define QSFP_25         24
-#define QSFP_26         25
-#define QSFP_27         26
-#define QSFP_28         27
-#define QSFP_29         28
-#define QSFP_30         29
-#define QSFP_31         30
-#define QSFP_32         31
+ 
 /* Bit value */
 #define BIT0            0x0001
 #define BIT1            0x0002
@@ -151,9 +119,8 @@ onlp_sfpi_is_present(int port)
 
 int
 onlp_sfpi_rx_los_bitmap_get(onlp_sfp_bitmap_t* dst)
-{
-    /* Not defined*/
-    return ONLP_STATUS_OK;
+{    
+    return ONLP_STATUS_E_UNSUPPORTED;
 }
 
 int
@@ -263,6 +230,7 @@ onlp_sfpi_control_get(int port, onlp_sfp_control_t control, int* value)
                     rv= ONLP_STATUS_E_INTERNAL;
                 break;
             }
+        /*
         case ONLP_SFP_CONTROL_TX_FAULT:
             {
                 rv=ONLP_STATUS_OK;
@@ -271,7 +239,9 @@ onlp_sfpi_control_get(int port, onlp_sfp_control_t control, int* value)
                 if (0 > onlp_file_read_hex(value, path ))
                     rv= ONLP_STATUS_E_INTERNAL;
                 break;
-            }            
+            } 
+        */             
+       /*    
         case ONLP_SFP_CONTROL_RX_LOS:
             {
                 rv=ONLP_STATUS_OK;
@@ -280,7 +250,8 @@ onlp_sfpi_control_get(int port, onlp_sfp_control_t control, int* value)
                 if (0 > onlp_file_read_hex(value, path ))
                     rv= ONLP_STATUS_E_INTERNAL;
                 break;
-            }   
+            }  
+        */  
         case ONLP_SFP_CONTROL_RESET:
             {
                 rv=ONLP_STATUS_OK;

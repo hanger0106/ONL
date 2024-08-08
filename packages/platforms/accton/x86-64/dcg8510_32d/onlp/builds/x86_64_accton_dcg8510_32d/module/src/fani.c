@@ -35,9 +35,24 @@
         }                                       \
     } while(0)
 
-#define MAX_FAN_SPEED    21000
+enum new_fan_id {
+    FAN_1_MOTOR_1_ON_FAN_BOARD = 1,
+    FAN_2_MOTOR_1_ON_FAN_BOARD,
+    FAN_3_MOTOR_1_ON_FAN_BOARD,
+    FAN_4_MOTOR_1_ON_FAN_BOARD,
+    FAN_5_MOTOR_1_ON_FAN_BOARD,
+    FAN_6_MOTOR_1_ON_FAN_BOARD,
+    FAN_1_MOTOR_2_ON_FAN_BOARD,
+    FAN_2_MOTOR_2_ON_FAN_BOARD,
+    FAN_3_MOTOR_2_ON_FAN_BOARD,
+    FAN_4_MOTOR_2_ON_FAN_BOARD,
+    FAN_5_MOTOR_2_ON_FAN_BOARD,
+    FAN_6_MOTOR_2_ON_FAN_BOARD,
+    FAN_ON_PSU1,
+    FAN_ON_PSU2,
+};
 
-enum fan_id {
+enum old_fan_id {
     FAN_1_ON_FAN_BOARD = 1,
     FAN_2_ON_FAN_BOARD,
     FAN_3_ON_FAN_BOARD,
@@ -47,27 +62,175 @@ enum fan_id {
 };
 
 #define FAN_BOARD_PATH    "/sys/switch/fan/"
+#define PSU_PATH    "/sys/switch/psu/"
 
-#define CHASSIS_FAN_INFO(fid)        \
+#define FAN_NAME(fan_id) "Chassis Fan-" #fan_id
+#define CHASSIS_FAN_ID(fid,mid) FAN_##fid##_MOTOR_##mid##_ON_FAN_BOARD
+#define PSU_FAN_ID(psuid) FAN_ON_PSU##psuid
+#define CHASSIS_FAN_INFO(_id,_desc)        \
     { \
-        { ONLP_FAN_ID_CREATE(FAN_##fid##_ON_FAN_BOARD), "Chassis Fan-"#fid, 0 },\
+        { ONLP_FAN_ID_CREATE(_id), _desc, 0 },\
         0x0,\
         ONLP_FAN_CAPS_SET_PERCENTAGE | ONLP_FAN_CAPS_GET_RPM | ONLP_FAN_CAPS_GET_PERCENTAGE,\
         0,\
         0,\
         ONLP_FAN_MODE_INVALID,\
     }
+#define PSU_FAN_INFO(_id,_desc)        \
+    { \
+        { ONLP_FAN_ID_CREATE(_id), _desc, 0 },\
+        0x0,\
+        ONLP_FAN_CAPS_SET_PERCENTAGE | ONLP_FAN_CAPS_GET_RPM | ONLP_FAN_CAPS_GET_PERCENTAGE,\
+        0,\
+        0,\
+        ONLP_FAN_MODE_INVALID,\
+    }    
 
 /* Static fan information */
 onlp_fan_info_t finfo[] = {
     { }, /* Not used */
-    CHASSIS_FAN_INFO(1),
-    CHASSIS_FAN_INFO(2),
-    CHASSIS_FAN_INFO(3),
-    CHASSIS_FAN_INFO(4),
-    CHASSIS_FAN_INFO(5),
-    CHASSIS_FAN_INFO(6),
+    CHASSIS_FAN_INFO(1,"Chassis Fan-1 Motor-1"),
+    CHASSIS_FAN_INFO(2,"Chassis Fan-2 Motor-1"),
+    CHASSIS_FAN_INFO(3,"Chassis Fan-3 Motor-1"),
+    CHASSIS_FAN_INFO(4,"Chassis Fan-4 Motor-1"),
+    CHASSIS_FAN_INFO(5,"Chassis Fan-5 Motor-1"),
+    CHASSIS_FAN_INFO(6,"Chassis Fan-6 Motor-1"),
+    CHASSIS_FAN_INFO(7,"Chassis Fan-1 Motor-2"),
+    CHASSIS_FAN_INFO(8,"Chassis Fan-2 Motor-2"),
+    CHASSIS_FAN_INFO(9,"Chassis Fan-3 Motor-2"),
+    CHASSIS_FAN_INFO(10,"Chassis Fan-4 Motor-2"),
+    CHASSIS_FAN_INFO(11,"Chassis Fan-5 Motor-2"),
+    CHASSIS_FAN_INFO(12,"Chassis Fan-6 Motor-2"),
+    PSU_FAN_INFO(FAN_ON_PSU1,"PSU 1 Fan"),
+    PSU_FAN_INFO(FAN_ON_PSU2,"PSU 2 Fan"),
 };
+
+
+typedef struct fan_syspath_s {
+    char * status;
+	char * speed;
+    char * percentage;
+    char * direction;
+    char * model_name;
+    char * serial_number;
+} fan_syspath_t;
+
+fan_syspath_t syspath[]={
+    { }, /* Not used */
+	{  /*FAN_1_MOTOR_1_ON_FAN_BOARD*/  \
+        FAN_BOARD_PATH"fan1/status",\
+        FAN_BOARD_PATH"fan1/motor1/speed",\
+        FAN_BOARD_PATH"fan1/motor1/ratio",\
+        FAN_BOARD_PATH"fan1/motor1/direction",\
+        FAN_BOARD_PATH"fan1/model_name" ,\
+        FAN_BOARD_PATH"fan1/serial_number",\
+    },
+	{  /*FAN_2_MOTOR_1_ON_FAN_BOARD*/  \
+        FAN_BOARD_PATH"fan2/status",\
+        FAN_BOARD_PATH"fan2/motor1/speed",\
+        FAN_BOARD_PATH"fan2/motor1/ratio",\
+        FAN_BOARD_PATH"fan2/motor1/direction",\
+        FAN_BOARD_PATH"fan2/model_name" ,\
+        FAN_BOARD_PATH"fan2/serial_number",\
+    },
+	{  /*FAN_3_MOTOR_1_ON_FAN_BOARD*/  \
+        FAN_BOARD_PATH"fan3/status",\
+        FAN_BOARD_PATH"fan3/motor1/speed",\
+        FAN_BOARD_PATH"fan3/motor1/ratio",\
+        FAN_BOARD_PATH"fan3/motor1/direction",\
+        FAN_BOARD_PATH"fan3/model_name" ,\
+        FAN_BOARD_PATH"fan3/serial_number",\
+    },    
+	{  /*FAN_4_MOTOR_1_ON_FAN_BOARD*/  \
+        FAN_BOARD_PATH"fan4/status",\
+        FAN_BOARD_PATH"fan4/motor1/speed",\
+        FAN_BOARD_PATH"fan4/motor1/ratio",\
+        FAN_BOARD_PATH"fan4/motor1/direction",\
+        FAN_BOARD_PATH"fan4/model_name" ,\
+        FAN_BOARD_PATH"fan4/serial_number",\
+    },     
+	{  /*FAN_5_MOTOR_1_ON_FAN_BOARD*/  \
+        FAN_BOARD_PATH"fan5/status",\
+        FAN_BOARD_PATH"fan5/motor1/speed",\
+        FAN_BOARD_PATH"fan5/motor1/ratio",\
+        FAN_BOARD_PATH"fan5/motor1/direction",\
+        FAN_BOARD_PATH"fan5/model_name" ,\
+        FAN_BOARD_PATH"fan5/serial_number",\
+    },  
+	{  /*FAN_6_MOTOR_1_ON_FAN_BOARD*/  \
+        FAN_BOARD_PATH"fan6/status",\
+        FAN_BOARD_PATH"fan6/motor1/speed",\
+        FAN_BOARD_PATH"fan6/motor1/ratio",\
+        FAN_BOARD_PATH"fan6/motor1/direction",\
+        FAN_BOARD_PATH"fan6/model_name" ,\
+        FAN_BOARD_PATH"fan6/serial_number",\
+    },  
+	{  /*FAN_1_MOTOR_2_ON_FAN_BOARD*/  \
+        FAN_BOARD_PATH"fan1/status",\
+        FAN_BOARD_PATH"fan1/motor2/speed",\
+        FAN_BOARD_PATH"fan1/motor2/ratio",\
+        FAN_BOARD_PATH"fan1/motor2/direction",\
+        FAN_BOARD_PATH"fan1/model_name" ,\
+        FAN_BOARD_PATH"fan1/serial_number",\
+    },     
+	{  /*FAN_2_MOTOR_2_ON_FAN_BOARD*/  \
+        FAN_BOARD_PATH"fan2/status",\
+        FAN_BOARD_PATH"fan2/motor2/speed",\
+        FAN_BOARD_PATH"fan2/motor2/ratio",\
+        FAN_BOARD_PATH"fan2/motor2/direction",\
+        FAN_BOARD_PATH"fan2/model_name" ,\
+        FAN_BOARD_PATH"fan2/serial_number",\
+    },  
+	{  /*FAN_3_MOTOR_2_ON_FAN_BOARD*/  \
+        FAN_BOARD_PATH"fan3/status",\
+        FAN_BOARD_PATH"fan3/motor2/speed",\
+        FAN_BOARD_PATH"fan3/motor2/ratio",\
+        FAN_BOARD_PATH"fan3/motor2/direction",\
+        FAN_BOARD_PATH"fan3/model_name" ,\
+        FAN_BOARD_PATH"fan3/serial_number",\
+    },       
+	{  /*FAN_4_MOTOR_2_ON_FAN_BOARD*/  \
+        FAN_BOARD_PATH"fan4/status",\
+        FAN_BOARD_PATH"fan4/motor2/speed",\
+        FAN_BOARD_PATH"fan4/motor2/ratio",\
+        FAN_BOARD_PATH"fan4/motor2/direction",\
+        FAN_BOARD_PATH"fan4/model_name" ,\
+        FAN_BOARD_PATH"fan4/serial_number",\
+    },       
+	{  /*FAN_5_MOTOR_2_ON_FAN_BOARD*/  \
+        FAN_BOARD_PATH"fan5/status",\
+        FAN_BOARD_PATH"fan5/motor2/speed",\
+        FAN_BOARD_PATH"fan5/motor2/ratio",\
+        FAN_BOARD_PATH"fan5/motor2/direction",\
+        FAN_BOARD_PATH"fan5/model_name" ,\
+        FAN_BOARD_PATH"fan5/serial_number",\
+    },  
+	{  /*FAN_6_MOTOR_2_ON_FAN_BOARD*/  \
+        FAN_BOARD_PATH"fan6/status",\
+        FAN_BOARD_PATH"fan6/motor2/speed",\
+        FAN_BOARD_PATH"fan6/motor2/ratio",\
+        FAN_BOARD_PATH"fan6/motor2/direction",\
+        FAN_BOARD_PATH"fan6/model_name" ,\
+        FAN_BOARD_PATH"fan6/serial_number",\
+    },     
+	{  /*FAN_ON_PSU1*/  \
+        PSU_PATH"psu1/present",\
+        PSU_PATH"psu1/fan_speed",\
+        PSU_PATH"psu1/fan_ratio",\
+        0,\
+        0,\
+        0,\
+    },   
+	{  /*FAN_ON_PSU2*/  \
+        PSU_PATH"psu1/present",\
+        PSU_PATH"psu1/fan_speed",\
+        PSU_PATH"psu1/fan_ratio",\
+        0,\
+        0,\
+        0,\
+    },                                          
+};
+
 
 /*
  * This function will be called prior to all of onlp_fani_* functions.
@@ -75,14 +238,15 @@ onlp_fan_info_t finfo[] = {
 int
 onlp_fani_init(void)
 {
+    //get speed_max
     return ONLP_STATUS_OK;
 }
+
 
 int
 onlp_fani_info_get(onlp_oid_t id, onlp_fan_info_t* info)
 {
-    int  value = 0, fid,fmid,len;
-    char path[64] = {0};
+    int  value = 0, fid,len;
     VALIDATE(id);
 
     fid = ONLP_OID_ID_GET(id);
@@ -91,63 +255,71 @@ onlp_fani_info_get(onlp_oid_t id, onlp_fan_info_t* info)
     /* get fan present status
      */
     //  /sys/switch/fan/fan1/status :1(good)
-    sprintf(path, "%sfan%d/status", FAN_BOARD_PATH, fid);
-    if (0 > onlp_file_read_int(&value, path ))
-        return ONLP_STATUS_E_INTERNAL;
-    if (value != 1) {
-        return ONLP_STATUS_OK;  /* fan is not present */
+    if(syspath[fid].status){
+        if (0 > onlp_file_read_int(&value, syspath[fid].status ))
+            return ONLP_STATUS_E_INTERNAL;
+        if (value != 1) {
+            return ONLP_STATUS_OK;  /* fan is not present */
+        }
+        info->status |= ONLP_FAN_STATUS_PRESENT;
+        if(fid <= FAN_6_MOTOR_2_ON_FAN_BOARD){
+           if (value==2) //2(present but fail)
+                info->status |= ONLP_FAN_STATUS_FAILED;           
+        }
     }
-    info->status |= ONLP_FAN_STATUS_PRESENT;
+
 
     /* get front fan rpm
      */
-    // fan[n]/motor[n]/speed
-    info->rpm=0;
-    for(fmid=1;fmid<=CHASSIS_FAN_MOTOR_COUNT;fmid++){
-        sprintf(path, "%sfan%d/motor%d/speed", FAN_BOARD_PATH, fid,fmid);
-        if (0 > onlp_file_read_int(&value, path ))
+    if(syspath[fid].speed){
+        if (0 > onlp_file_read_int(&value, syspath[fid].speed ))
             return ONLP_STATUS_E_INTERNAL;
-        if(info->rpm==0)
-            info->rpm = value;
-        else if (info->rpm > value) //take the min value from front/rear fan speed
-            info->rpm = value;
+         info->rpm = value;
     }
 
-    /* set fan status based on rpm
+    /* set fan fail based on rpm
      */
-    if (!info->rpm) {
-        info->status |= ONLP_FAN_STATUS_FAILED;
-        return ONLP_STATUS_OK;
+    if(fid>FAN_6_MOTOR_2_ON_FAN_BOARD){
+        if (!info->rpm) {
+            info->status |= ONLP_FAN_STATUS_FAILED;
+            return ONLP_STATUS_OK;
+        }
     }
 
-    /* get speed percentage from rpm 
+    /* get speed percentage 
      */
-    info->percentage = (info->rpm * 100)/MAX_FAN_SPEED;
+    if(syspath[fid].percentage){
+        if (0 > onlp_file_read_int(&value, syspath[fid].percentage ))
+            return ONLP_STATUS_E_INTERNAL;
+         info->percentage = value;
+    }
 
-    /* set fan direction
+    /* get fan direction
      */
-    ///sys_switch/fan/fan[n]/motor[n]/direction
-    sprintf(path, "%sfan%d/motor%d/direction", FAN_BOARD_PATH, fid,1);
-    if (0 > onlp_file_read_int(&value, path ))
-        return ONLP_STATUS_E_INTERNAL;
+    value=0;
+    if(syspath[fid].direction){
+        if (0 > onlp_file_read_int(&value, syspath[fid].direction ))
+            return ONLP_STATUS_E_INTERNAL;
+    }
     if(value == 0)
         info->status |= ONLP_FAN_STATUS_F2B;
     else if (value == 1)
         info->status |= ONLP_FAN_STATUS_B2F;
+
     /* Get model name */
-    // /sys_switch/fan/fan[n]/model_name
-    sprintf(path, "%sfan%d/model_name", FAN_BOARD_PATH, fid);
-    if (0 > onlp_file_read((uint8_t*)info->model,sizeof(info->model),&len, path ))
-        return ONLP_STATUS_E_INTERNAL;   
- 
+    if(syspath[fid].model_name){
+        if (0 > onlp_file_read((uint8_t*)info->model,sizeof(info->model),&len, syspath[fid].model_name ))
+            return ONLP_STATUS_E_INTERNAL;
+    }
+
     /* Get serial*/
-    // /sys_switch/fan/fan[n]/serial_number
-    sprintf(path, "%sfan%d/serial_number", FAN_BOARD_PATH, fid);
-    if (0 > onlp_file_read((uint8_t*)info->serial,sizeof(info->model),&len, path ))
-        return ONLP_STATUS_E_INTERNAL; 
+    if(syspath[fid].serial_number){
+        if (0 > onlp_file_read((uint8_t*)info->serial,sizeof(info->model),&len, syspath[fid].serial_number ))
+            return ONLP_STATUS_E_INTERNAL;
+    }
     return ONLP_STATUS_OK;
 }
-
+    
 /*
  * This function sets the speed of the given fan in RPM.
  *
@@ -173,15 +345,12 @@ onlp_fani_rpm_set(onlp_oid_t id, int rpm)
 int
 onlp_fani_percentage_set(onlp_oid_t id, int p)
 {
-    int fid,fmid;
+    int fid;
     fid = ONLP_OID_ID_GET(id);
-    char path[64] = {0};
-    ///sys_switch/fan/fan[n]/motor[n]/ratio
-    for(fmid=1;fmid<=CHASSIS_FAN_MOTOR_COUNT;fmid++){
-        sprintf(path, "%d > %sfan%d/motor%d/ratio", p,FAN_BOARD_PATH,fid,fmid);
-        if ( 0 < onlp_file_write_int(p, path))
-            return ONLP_STATUS_E_INTERNAL;    
-    }   
+    if(syspath[fid].percentage){
+        if ( 0 > onlp_file_write_int(p, syspath[fid].percentage))
+            return ONLP_STATUS_E_INTERNAL;
+    }
     return ONLP_STATUS_OK;
 }
 

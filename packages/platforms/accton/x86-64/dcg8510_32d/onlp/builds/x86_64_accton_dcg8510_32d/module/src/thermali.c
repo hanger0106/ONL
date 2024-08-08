@@ -34,23 +34,10 @@
         }                                       \
     } while(0)
 
-//#define THERMAL_PATH_FORMAT "/sys/bus/i2c/drivers/lm75/%s/temp1_input"
-#define THERMAL_CPU_CORE_PATH_FORMAT "/sys/bus/i2c/drivers/com_e_driver/%s/temp2_input"
 #define THERMAL_PATH_FORMAT "/sys/switch/sensor/temp%d/temp_input"
+#define THERMAL_PSU_FORMAT "/sys/switch/psu/psu%d/temp%d/temp_input"
  
-#if 0
-static char* directory[] =  /* must map with onlp_thermal_id */
-{
-    NULL,
-    "4-0033",
-    "3-0048",
-    "3-0049",
-    "3-004a",
-    "3-004b",
-    "3-004c",
-    "3-004d",
-};
-#endif
+ 
 /* Static values */
 static onlp_thermal_info_t linfo[] =
 {
@@ -135,6 +122,22 @@ static onlp_thermal_info_t linfo[] =
             ONLP_THERMAL_STATUS_PRESENT,
             ONLP_THERMAL_CAPS_ALL, 0, ONLP_THERMAL_THRESHOLD_INIT_DEFAULTS
     }, 
+    { { ONLP_THERMAL_ID_CREATE(THERMAL_PSU1_TEMP_1), "PSU1_TEMP_1", 0},
+            ONLP_THERMAL_STATUS_PRESENT,
+            ONLP_THERMAL_CAPS_ALL, 0, ONLP_THERMAL_THRESHOLD_INIT_DEFAULTS
+    },     
+    { { ONLP_THERMAL_ID_CREATE(THERMAL_PSU1_TEMP_2), "PSU1_TEMP_2", 0},
+            ONLP_THERMAL_STATUS_PRESENT,
+            ONLP_THERMAL_CAPS_ALL, 0, ONLP_THERMAL_THRESHOLD_INIT_DEFAULTS
+    },  
+    { { ONLP_THERMAL_ID_CREATE(THERMAL_PSU2_TEMP_1), "PSU2_TEMP_1", 0},
+            ONLP_THERMAL_STATUS_PRESENT,
+            ONLP_THERMAL_CAPS_ALL, 0, ONLP_THERMAL_THRESHOLD_INIT_DEFAULTS
+    },  
+    { { ONLP_THERMAL_ID_CREATE(THERMAL_PSU2_TEMP_2), "PSU1_TEMP_2", 0},
+            ONLP_THERMAL_STATUS_PRESENT,
+            ONLP_THERMAL_CAPS_ALL, 0, ONLP_THERMAL_THRESHOLD_INIT_DEFAULTS
+    },              
 };
 
 /*
@@ -160,15 +163,38 @@ int
 onlp_thermali_info_get(onlp_oid_t id, onlp_thermal_info_t* info)
 {
     int   tid;
-    char  path[64] = {0};
+    char  path[128] = {0};
     VALIDATE(id);
     
     tid = ONLP_OID_ID_GET(id);
     /* Set the onlp_oid_hdr_t and capabilities */
     *info = linfo[tid];
- 
-    sprintf(path, THERMAL_PATH_FORMAT, tid);
-    if (0 > onlp_file_read_int(&info->mcelsius, path ))
-            return ONLP_STATUS_E_INTERNAL;
+    if(tid<THERMAL_PSU1_TEMP_1){
+        sprintf(path, THERMAL_PATH_FORMAT, tid);
+        if (0 > onlp_file_read_int(&info->mcelsius, path ))
+                return ONLP_STATUS_E_INTERNAL;
+    }
+    else{
+        switch(tid){
+            case THERMAL_PSU1_TEMP_1:
+                sprintf(path, THERMAL_PSU_FORMAT, 1,1);
+                break;
+            case THERMAL_PSU1_TEMP_2:
+                sprintf(path, THERMAL_PSU_FORMAT, 1,2);
+                break;
+            case THERMAL_PSU2_TEMP_1:
+                sprintf(path, THERMAL_PSU_FORMAT, 2,1);
+                break;
+            case THERMAL_PSU2_TEMP_2:
+                sprintf(path, THERMAL_PSU_FORMAT, 2,2);
+                break;  
+            default:
+                return ONLP_STATUS_E_INTERNAL;           
+        }
+        if (0 > onlp_file_read_int(&info->mcelsius, path ))
+                return ONLP_STATUS_E_INTERNAL;
+        
+    }
+
     return ONLP_STATUS_OK;
 }

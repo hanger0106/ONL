@@ -39,13 +39,6 @@
 #define PSU1_ID 1
 #define PSU2_ID 2
 
-#define SYS_CPLD_PATH_FMT   "/sys/bus/i2c/devices/12-0031/%s"
-#define PSU_PRESENT_FMT     "psu%d_present"
-#define PSU_PWROK_FMT       "psu%d_output_pwr_sts"
-
-#define PSU_PFE1500_PATH_FMT    "/sys/bus/i2c/devices/7-%s/%s\r\n"
-#define PSU_PFE1500_MODEL   "mfr_model"
-#define PSU_PFE1500_SERIAL  "mfr_serial"
 
 #define PSU_PATH "/sys/switch/psu/"
 
@@ -91,11 +84,25 @@ onlp_psui_info_get(onlp_oid_t id, onlp_psu_info_t* info)
         return ONLP_STATUS_E_INTERNAL;
 
     if (value!=1) {
-        info->status &= ~ONLP_PSU_STATUS_PRESENT;
+        info->status &= ~ONLP_PSU_STATUS_PRESENT;        
         return ONLP_STATUS_OK;
     }
     info->status |= ONLP_PSU_STATUS_PRESENT;
     info->caps = ONLP_PSU_CAPS_AC; 
+
+    /* Read vin */
+    // /sys_switch/psu/psu[n]/in_vol
+    sprintf(path, "%spsu%d/in_vol", PSU_PATH, pid);
+    if (0 > onlp_file_read_int(&value, path ))
+        return ONLP_STATUS_E_INTERNAL;   
+    if (value > 0) {
+        info->mvin = value;
+        info->caps |= ONLP_PSU_CAPS_VIN;
+    }else{
+        info->status |=ONLP_PSU_STATUS_UNPLUGGED;
+        return ONLP_STATUS_OK;
+    }
+
 
     /* Get power good status */
     // /sys_switch/psu/psu[n]/out_status
@@ -110,15 +117,7 @@ onlp_psui_info_get(onlp_oid_t id, onlp_psu_info_t* info)
 
     /* Get input output power status */
 
-    /* Read vin */
-    // /sys_switch/psu/psu[n]/in_vol
-    sprintf(path, "%spsu%d/in_vol", PSU_PATH, pid);
-    if (0 > onlp_file_read_int(&value, path ))
-        return ONLP_STATUS_E_INTERNAL;   
-    if (value >= 0) {
-        info->mvin = value;
-        info->caps |= ONLP_PSU_CAPS_VIN;
-    }
+
 
     /* Read iin */
     // /sys_switch/psu/psu[n]/in_curr
