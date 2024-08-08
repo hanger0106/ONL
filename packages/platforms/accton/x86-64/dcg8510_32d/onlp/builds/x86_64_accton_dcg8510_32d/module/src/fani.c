@@ -52,15 +52,6 @@ enum new_fan_id {
     FAN_ON_PSU2,
 };
 
-enum old_fan_id {
-    FAN_1_ON_FAN_BOARD = 1,
-    FAN_2_ON_FAN_BOARD,
-    FAN_3_ON_FAN_BOARD,
-    FAN_4_ON_FAN_BOARD,
-    FAN_5_ON_FAN_BOARD,
-    FAN_6_ON_FAN_BOARD,
-};
-
 #define FAN_BOARD_PATH    "/sys/switch/fan/"
 #define PSU_PATH    "/sys/switch/psu/"
 
