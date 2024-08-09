@@ -42,10 +42,12 @@
 static onlp_thermal_info_t linfo[] =
 {
     { }, /* Not used */
+    /*
     { { ONLP_THERMAL_ID_CREATE(THERMAL_MAC_PIPE), "MAC_PIPE", 0},
             ONLP_THERMAL_STATUS_PRESENT,
             ONLP_THERMAL_CAPS_ALL, 0, ONLP_THERMAL_THRESHOLD_INIT_DEFAULTS
     },   
+    */
     { { ONLP_THERMAL_ID_CREATE(THERMAL_CPU_CORE_0), "CPU_CORE_0", 0},
             ONLP_THERMAL_STATUS_PRESENT,
             ONLP_THERMAL_CAPS_ALL, 0, ONLP_THERMAL_THRESHOLD_INIT_DEFAULTS
@@ -134,7 +136,7 @@ static onlp_thermal_info_t linfo[] =
             ONLP_THERMAL_STATUS_PRESENT,
             ONLP_THERMAL_CAPS_ALL, 0, ONLP_THERMAL_THRESHOLD_INIT_DEFAULTS
     },  
-    { { ONLP_THERMAL_ID_CREATE(THERMAL_PSU2_TEMP_2), "PSU1_TEMP_2", 0},
+    { { ONLP_THERMAL_ID_CREATE(THERMAL_PSU2_TEMP_2), "PSU2_TEMP_2", 0},
             ONLP_THERMAL_STATUS_PRESENT,
             ONLP_THERMAL_CAPS_ALL, 0, ONLP_THERMAL_THRESHOLD_INIT_DEFAULTS
     },              
@@ -170,7 +172,7 @@ onlp_thermali_info_get(onlp_oid_t id, onlp_thermal_info_t* info)
     /* Set the onlp_oid_hdr_t and capabilities */
     *info = linfo[tid];
     if(tid<THERMAL_PSU1_TEMP_1){
-        sprintf(path, THERMAL_PATH_FORMAT, tid);
+        sprintf(path, THERMAL_PATH_FORMAT, tid+1);//remove THERMAL_MAC_PIPE,  
         if (0 > onlp_file_read_int(&info->mcelsius, path ))
                 return ONLP_STATUS_E_INTERNAL;
     }

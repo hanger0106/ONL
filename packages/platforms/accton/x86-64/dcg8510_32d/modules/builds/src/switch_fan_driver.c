@@ -357,7 +357,7 @@ ssize_t drv_get_hw_version(unsigned int fan_index, char *buf)
 
 ssize_t drv_get_speed(unsigned int fan_index, unsigned int motor_index, unsigned int *speed)
 {
-    int retval=0;
+    int retval;
 
     retval = drv_get_speed_from_bmc(fan_index, motor_index, speed);
 
@@ -373,9 +373,9 @@ ssize_t drv_get_speed(unsigned int fan_index, unsigned int motor_index, unsigned
 ssize_t drv_get_speed_target(unsigned int fan_index, unsigned int motor_index, unsigned int *speed_target)
 {
     int pwm;
-    unsigned int retval=0;
+    unsigned int retval;
     retval = drv_get_pwm_from_bmc(fan_index,&pwm);
-    if((retval < 0) | (pwm < 30) | (pwm > 100))
+    if ((retval < 0) || (pwm < 30) || (pwm > 100))
     {
         FAN_ERR("Get fan%d pwm failed.\n", fan_index);
         return -1;
@@ -512,11 +512,11 @@ unsigned int drv_get_status(unsigned int fan_index)
     unsigned int speed;
     unsigned int speed_target;
     unsigned int speed_tolerance=0;
-    unsigned int retval=0;
+    unsigned int retval;
     unsigned int motor_index;
     bool has_failed = false;
 
-    for(motor_index = 1; motor_index <= MAX_MOTOR_NUM; motor_index++)
+    for(motor_index = 0; motor_index < MAX_MOTOR_NUM; motor_index++)
     {
         retval = drv_get_speed(fan_index, motor_index, &speed);
         if(retval < 0)
@@ -715,7 +715,7 @@ static struct platform_driver drv_fan_driver = {
 static int __init drv_fan_init(void)
 {
     int err=0;
-    int retval=0;
+    int retval;
 
     drv_fan_device = platform_device_alloc(DRVNAME, 0);
     if(!drv_fan_device)

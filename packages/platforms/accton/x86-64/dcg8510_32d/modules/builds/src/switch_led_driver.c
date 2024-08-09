@@ -41,7 +41,9 @@ bool drv_set_port_led(unsigned long *bitmap)
 bool drv_get_sys_led(unsigned char *led)
 {
     int ret = 0;
-    ret = switch_cpld_reg_read(SYS_CPLD, CPLD_SYS_LED_CTL_OFFSET, led);
+    unsigned char reg_value = 0;
+    ret = switch_cpld_reg_read(SYS_CPLD, CPLD_SYS_LED_CTL_OFFSET, &reg_value);
+    *led = (reg_value & 0x3F);
     if(ret < 0)
         return false;
     return true;
@@ -50,7 +52,9 @@ bool drv_get_sys_led(unsigned char *led)
 bool drv_set_sys_led(unsigned char led)
 {
     int ret = 0;
-    ret = switch_cpld_reg_write(SYS_CPLD, CPLD_SYS_LED_CTL_OFFSET, led);
+    unsigned char reg_value = 0;
+    reg_value = (0x40 | led);
+    ret = switch_cpld_reg_write(SYS_CPLD, CPLD_SYS_LED_CTL_OFFSET, reg_value);
     if(ret < 0)
         return false;
     return true;
@@ -208,7 +212,7 @@ static struct platform_driver drv_led_driver = {
 static int __init drv_led_init(void)
 {
     int err=0;
-    int retval=0;
+    int retval;
 
     drv_led_device = platform_device_alloc(DRVNAME, 0);
     if(!drv_led_device)
