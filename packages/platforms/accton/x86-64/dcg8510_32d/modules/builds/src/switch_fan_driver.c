@@ -516,9 +516,9 @@ unsigned int drv_get_status(unsigned int fan_index)
     unsigned int motor_index;
     bool has_failed = false;
 
-    for(motor_index = 0; motor_index < MAX_MOTOR_NUM; motor_index++)
+    for(motor_index = 1; motor_index < MAX_MOTOR_NUM+1; motor_index++)
     {
-        retval = drv_get_speed(fan_index, motor_index, &speed);
+        retval = drv_get_speed(fan_index, motor_index-1, &speed);
         if(retval < 0)
         {
             FAN_ERR("Get fan%d motor%d speed failed.\n", fan_index, motor_index);
