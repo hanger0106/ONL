@@ -35,22 +35,6 @@
         }                                       \
     } while(0)
 
-enum new_fan_id {
-    FAN_1_MOTOR_1_ON_FAN_BOARD = 1,
-    FAN_2_MOTOR_1_ON_FAN_BOARD,
-    FAN_3_MOTOR_1_ON_FAN_BOARD,
-    FAN_4_MOTOR_1_ON_FAN_BOARD,
-    FAN_5_MOTOR_1_ON_FAN_BOARD,
-    FAN_6_MOTOR_1_ON_FAN_BOARD,
-    FAN_1_MOTOR_2_ON_FAN_BOARD,
-    FAN_2_MOTOR_2_ON_FAN_BOARD,
-    FAN_3_MOTOR_2_ON_FAN_BOARD,
-    FAN_4_MOTOR_2_ON_FAN_BOARD,
-    FAN_5_MOTOR_2_ON_FAN_BOARD,
-    FAN_6_MOTOR_2_ON_FAN_BOARD,
-    FAN_ON_PSU1,
-    FAN_ON_PSU2,
-};
 
 #define FAN_BOARD_PATH    "/sys/switch/fan/"
 #define PSU_PATH    "/sys/switch/psu/"

@@ -357,7 +357,7 @@ ssize_t drv_get_hw_version(unsigned int fan_index, char *buf)
 
 ssize_t drv_get_speed(unsigned int fan_index, unsigned int motor_index, unsigned int *speed)
 {
-    int retval;
+    int retval=0;
 
     retval = drv_get_speed_from_bmc(fan_index, motor_index, speed);
 
@@ -372,8 +372,8 @@ ssize_t drv_get_speed(unsigned int fan_index, unsigned int motor_index, unsigned
 
 ssize_t drv_get_speed_target(unsigned int fan_index, unsigned int motor_index, unsigned int *speed_target)
 {
-    int pwm;
-    unsigned int retval;
+    int pwm=0;
+    unsigned int retval=0;
     retval = drv_get_pwm_from_bmc(fan_index,&pwm);
     if ((retval < 0) || (pwm < 30) || (pwm > 100))
     {
@@ -516,7 +516,7 @@ unsigned int drv_get_status(unsigned int fan_index)
     unsigned int motor_index;
     bool has_failed = false;
 
-    for(motor_index = 1; motor_index < MAX_MOTOR_NUM+1; motor_index++)
+    for(motor_index = 1; motor_index <= MAX_MOTOR_NUM; motor_index++)
     {
         retval = drv_get_speed(fan_index, motor_index-1, &speed);
         if(retval < 0)
@@ -538,7 +538,7 @@ unsigned int drv_get_status(unsigned int fan_index)
             FAN_DEBUG("Get fan%d motor%d speed tolerance failed.\n", fan_index, motor_index);
             return -1;
         }
-
+        FAN_DEBUG("Fan%d motor%d speed %d is out of valid range? (%d-%d).", fan_index, motor_index, speed, (speed_target - speed_tolerance), (speed_target + speed_tolerance));
         if((speed > (speed_target + speed_tolerance)) || (speed < (speed_target - speed_tolerance)))
         {
             has_failed = true;

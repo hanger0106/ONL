@@ -52,10 +52,22 @@ static onlp_psu_info_t pinfo[] =
 {
     { }, /* Not used */
     {
-        { ONLP_PSU_ID_CREATE(PSU1_ID), "PSU-1", 0 },
+        { ONLP_PSU_ID_CREATE(PSU1_ID), "PSU-1", 0 ,
+            {
+                ONLP_THERMAL_ID_CREATE(THERMAL_PSU1_TEMP_1),
+                ONLP_THERMAL_ID_CREATE(THERMAL_PSU1_TEMP_2),
+                ONLP_FAN_ID_CREATE(FAN_ON_PSU1),
+            }
+        },
     },
     {
-        { ONLP_PSU_ID_CREATE(PSU2_ID), "PSU-2", 0 },
+        { ONLP_PSU_ID_CREATE(PSU2_ID), "PSU-2", 0 ,
+            {
+                ONLP_THERMAL_ID_CREATE(THERMAL_PSU2_TEMP_1),
+                ONLP_THERMAL_ID_CREATE(THERMAL_PSU2_TEMP_2),
+                ONLP_FAN_ID_CREATE(FAN_ON_PSU2),
+            }
+        },
     }
 };
 
