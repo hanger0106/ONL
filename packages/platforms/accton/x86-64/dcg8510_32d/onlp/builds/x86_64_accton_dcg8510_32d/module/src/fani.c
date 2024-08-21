@@ -197,9 +197,9 @@ fan_syspath_t syspath[]={
         0,\
     },   
 	{  /*FAN_ON_PSU2*/  \
-        PSU_PATH"psu1/present",\
-        PSU_PATH"psu1/fan_speed",\
-        PSU_PATH"psu1/fan_ratio",\
+        PSU_PATH"psu2/present",\
+        PSU_PATH"psu2/fan_speed",\
+        PSU_PATH"psu2/fan_ratio",\
         0,\
         0,\
         0,\
