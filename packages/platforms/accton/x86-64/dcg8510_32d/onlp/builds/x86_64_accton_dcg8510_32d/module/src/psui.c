@@ -102,6 +102,17 @@ onlp_psui_info_get(onlp_oid_t id, onlp_psu_info_t* info)
     info->status |= ONLP_PSU_STATUS_PRESENT;
     info->caps = ONLP_PSU_CAPS_AC; 
 
+    /* Get model name */
+    // /sys_switch/psu/psu[n]/model_name
+    sprintf(path, "%spsu%d/model_name", PSU_PATH, pid);
+    if (0 > onlp_file_read((uint8_t*)info->model,sizeof(info->model),&len, path ))
+        return ONLP_STATUS_E_INTERNAL;   
+    /* Get serial number */
+    // /sys_switch/psu/psu[n]/serial_number
+    sprintf(path, "%spsu%d/serial_number", PSU_PATH, pid);
+    if (0 > onlp_file_read((uint8_t*)info->serial,sizeof(info->serial),&len, path ))
+        return ONLP_STATUS_E_INTERNAL;   
+ 
     /* Read vin */
     // /sys_switch/psu/psu[n]/in_vol
     sprintf(path, "%spsu%d/in_vol", PSU_PATH, pid);
@@ -114,7 +125,6 @@ onlp_psui_info_get(onlp_oid_t id, onlp_psu_info_t* info)
         info->status |=ONLP_PSU_STATUS_UNPLUGGED;
         return ONLP_STATUS_OK;
     }
-
 
     /* Get power good status */
     // /sys_switch/psu/psu[n]/out_status
@@ -181,19 +191,6 @@ onlp_psui_info_get(onlp_oid_t id, onlp_psu_info_t* info)
         info->caps |= ONLP_PSU_CAPS_VOUT;
     }
 
-    /* Get model name */
-    // /sys_switch/psu/psu[n]/model_name
-    sprintf(path, "%spsu%d/model_name", PSU_PATH, pid);
-    if (0 > onlp_file_read((uint8_t*)info->model,sizeof(info->model),&len, path ))
-        return ONLP_STATUS_E_INTERNAL;   
- 
-  
-
-    /* Get serial number */
-    // /sys_switch/psu/psu[n]/serial_number
-    sprintf(path, "%spsu%d/serial_number", PSU_PATH, pid);
-    if (0 > onlp_file_read((uint8_t*)info->serial,sizeof(info->serial),&len, path ))
-        return ONLP_STATUS_E_INTERNAL;   
 
     return ONLP_STATUS_OK;
 }
