@@ -8,6 +8,16 @@ class OnlPlatform_x86_64_accton_dcg8510_32d_r0(OnlPlatformAccton,
     SYS_OBJECT_ID=".8510.32.1"
 
     def baseconfig(self):
+        # rootfs overlay
+        stamp_dirname = os.path.dirname(__file__)
+
+        #rootfs overlay
+        if not os.path.exists(stamp_dirname + "/rootfs_overlay.stamp"):
+            os.system("cp -r " + stamp_dirname + "/rootfs_overlay/* /")
+            os.system("sync /")
+            os.system("touch " + stamp_dirname + "/rootfs_overlay.stamp")
+
+
         self.insmod('s3ip/switch_s3ip_switch')
         self.insmod('s3ip/switch_s3ip_bmc')
         self.insmod('s3ip/switch_s3ip_cpld')
