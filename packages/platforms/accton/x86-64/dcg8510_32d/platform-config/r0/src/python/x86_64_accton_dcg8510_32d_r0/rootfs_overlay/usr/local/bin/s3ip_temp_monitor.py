@@ -94,8 +94,6 @@ FUNCTION_NAME = '/usr/local/bin/dcg8510_32d_temp_to_bmc'
 DEBUG = False
 
 TEMP_TIME = 10
-#simon: for debug
-TEMP_TIME = 1
 
 def my_log(txt):
     if DEBUG == True:
@@ -162,7 +160,7 @@ def get_x86_core_temperature():
 
     for x86_core in range(2,6):
         tmp_int = 0;
-        tmp_cmd = 'cat /sys/switch/sensor/temp%d/temp_input' % (x86_core + 1)
+        tmp_cmd = 'cat /sys/switch/sensor/temp%d/temp_input' % (x86_core)
         ret, tmp_output = commands.getstatusoutput(tmp_cmd)
         if(RET_TRUE != ret):
             DBG_LOG('fail to get x86_core(%d) temperature.' %x86_core)
@@ -172,10 +170,10 @@ def get_x86_core_temperature():
         if(tmp_int > max_result):
             max_result = tmp_int
 
-    return max_result
+    return (max_result/1000)
 
 def send_sfp_temp_to_bmc(temp):
-    cmd = 'ipmitool raw 0x36 0x16 %d' % (temp) 
+    cmd = 'ipmitool raw 0x36 0x16 %s' % (hex(int(temp))) 
     
     ret, output = commands.getstatusoutput(cmd)
     #SYS_LOG_INFO('%s, ret:%d, "%s"' %(cmd, ret, output))
@@ -186,7 +184,7 @@ def send_sfp_temp_to_bmc(temp):
     return RET_TRUE
 
 def send_tf2_pipe_temp_to_bmc(temp):
-    cmd = 'ipmitool raw 0x36 0x17 %d' % (temp) 
+    cmd = 'ipmitool raw 0x36 0x17 %s' % (hex(int(temp))) 
     
     ret, output = commands.getstatusoutput(cmd)
     #SYS_LOG_INFO('%s, ret:%d, "%s"' %(cmd, ret, output))
@@ -197,7 +195,7 @@ def send_tf2_pipe_temp_to_bmc(temp):
     return RET_TRUE
 
 def send_x86_core_temp_to_bmc(temp):
-    cmd = 'ipmitool raw 0x36 0xA3 %d' % (temp) 
+    cmd = 'ipmitool raw 0x36 0xA3 %s' % (hex(int(temp))) 
     
     ret, output = commands.getstatusoutput(cmd)
     #SYS_LOG_INFO('%s, ret:%d, "%s"' %(cmd, ret, output))
@@ -237,19 +235,20 @@ class device_monitor(object):
     def send_temp_to_bmc_progress(self):
         #sfp
         sfp_tmp = get_sfp_temperature()
-        send_sfp_temp_to_bmc(sfp_tmp)
+        send_sfp_temp_to_bmc(round(sfp_tmp))
         
         time.sleep(TEMP_TIME)
 
         #tf2 pipe
         tf2_pipe_tmp = get_tf2_pipe_temperature()
-        send_tf2_pipe_temp_to_bmc(tf2_pipe_tmp)
+        send_tf2_pipe_temp_to_bmc(round(tf2_pipe_tmp))
 
         time.sleep(TEMP_TIME)
 
         #x86 core temperature
         x86_core_tmp = get_x86_core_temperature()
-        send_x86_core_temp_to_bmc(x86_core_tmp)
+        send_x86_core_temp_to_bmc(round(x86_core_tmp))
+        
 
         time.sleep(TEMP_TIME)
         return True
