@@ -247,7 +247,7 @@ class device_monitor(object):
 
         #x86 core temperature
         x86_core_tmp = get_x86_core_temperature()
-        send_x86_core_temp_to_bmc(round(x86_core_tmp))
+        #send_x86_core_temp_to_bmc(round(x86_core_tmp))
         
 
         time.sleep(TEMP_TIME)
